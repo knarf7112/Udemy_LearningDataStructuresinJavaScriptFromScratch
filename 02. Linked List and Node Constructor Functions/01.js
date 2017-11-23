@@ -42,7 +42,7 @@ LinkedList.prototype.addToHead = function(value){
     }else{
         this.tail = newNode;
     }
-    this.head = newNode;
+    this.head = newNode;//設定新節點為Linked List的頭部
 }
 
 //------------------------------------------------------------
@@ -74,8 +74,128 @@ console.log(linkedList);
 而值100的節點的prev屬性指向值200的節點且next屬性指向null
 
 目前linkedList節點狀態如下:
-
-  null <---(Node3:head)<----->(Node2)<----->(Node1:tail)---> null
+               head                                  tail
+  null <---(Node3: 300)<----->(Node2: 200)<----->(Node1: 100)---> null
 
  */
 //------------------------------------------------------------
+
+//再來新增從tail新增節點的原型方法
+LinkedList.prototype.addToTail = function(value){
+    
+    //若tail為null, 表示此Linked List連第一個節點都沒有,那就將head也指向新節點
+    //若tail存在節點,將此節點的next屬性指向新節點
+    var newNode = new Node(value, this.tail, null);
+    if(this.tail){
+        this.tail.next = newNode;
+    }else{
+        this.head = newNode;
+    }
+    this.tail = newNode;//設定新節點為Linked List的尾部
+};
+
+linkedList.addToTail(400);
+console.log(linkedList);
+/*
+目前linkedList節點狀態如下:
+               head                                                     tail
+  null <---(Node3: 300)<----->(Node2: 200)<----->(Node1: 100)<----->(Node1: 400)---> null
+*/
+
+linkedList.addToTail(500);
+console.log(linkedList);
+/*
+目前linkedList節點狀態如下:
+               head                                                                        tail
+  null <---(Node3: 300)<----->(Node2: 200)<----->(Node1: 100)<----->(Node1: 400)<----->(Node1: 500)---> null
+*/
+
+//------------------------------------------------------------
+//再來新增一個移除頭部節點的方法
+LinkedList.prototype.removeHead = function() {
+    //若LinkedList為空的(未建立任何節點)值的部分就回傳null
+    //取得目前head節點的值用來回傳並將head換成下一個節點且將此節點的prev指向null(因為它變成第一個了)
+    if(!this.head) return null;
+    var value = this.head.value;
+    this.head = this.head.next;
+    //如果原本LinkedList的節點只有一個,那移除後也須要將tail屬性設為null
+    //如果原本LinkedList的節點不只一個,那就是將新的head的prev屬性指向null
+    if(this.head){
+        this.head.prev = null;
+    }
+    else{
+        this.tail = null;
+    }
+    return value;
+};
+
+var l2 = new LinkedList();
+
+l2.addToHead(1000);
+l2.addToHead(2000);
+l2.addToHead(3000);
+
+l2.removeHead();
+console.log(l2.removeHead());// 2000
+l2.removeHead();
+
+console.log(l2);// LinkedList { head: null, tail: null }
+
+//------------------------------------------------------------
+//再來新增一個移除尾部節點的方法(類似移除頭部的方法)
+LinkedList.prototype.removeTail = function() {
+
+    if(!this.tail) return null;
+    var value = this.tail.value;
+    this.tail = this.tail.prev;//將尾部指標往前移
+    //若尾部節點存在(表示LinkedList存在不只一個節點),就將新的尾部節點的next屬性設為null
+    //若尾部節點不存在(表示LinkedList內只有一個節點),移除了就不存在任何節點了,所以就將頭部的指標也移除(設為null)
+    if(this.tail){
+        this.tail.next = null;
+    }
+    else{
+        this.head = null;
+    }
+    return value;
+};
+
+var l3 = new LinkedList();
+
+l3.addToHead(1000);
+l3.addToHead(2000);
+l3.addToHead(3000);
+
+l3.removeTail();
+console.log(l3.removeTail());// 2000
+l3.removeTail();
+
+console.log(l2);// LinkedList { head: null, tail: null }
+
+//------------------------------------------------------------
+//最後一個方法是Search: 目的是從LinkedList內,找出相符的值,並回傳此節點
+LinkedList.prototype.search = function(searchValue){
+
+    //think:要遍歷整個LinkedList的節點,所以就一步一步移動指標來遍歷整個LinkedList,當找到值相符的節點,就回傳值
+    var currentNode = this.head;//也可從尾部開始找
+    while(currentNode){
+        if(currentNode.value === searchValue){
+            return currentNode.value;
+        }
+        currentNode = currentNode.next;
+    }
+    return null;
+};
+
+var l4 = new LinkedList();
+
+l4.addToHead(123);
+l4.addToHead(2000);
+l4.addToHead('hello');
+l4.addToHead('world');
+l4.addToHead(true);
+
+console.log(l4.search(0));// null
+console.log(l4.search(2000));// 2000
+console.log(l4.search('hello'));// hello
+console.log(l4.search('test'));// null
+
