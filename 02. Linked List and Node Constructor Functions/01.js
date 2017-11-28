@@ -199,3 +199,45 @@ console.log(l4.search(2000));// 2000
 console.log(l4.search('hello'));// hello
 console.log(l4.search('test'));// null
 
+//------------------------------------------------------------
+//練習建立一個類似Array的IndexOf方法,但回傳的是一個陣列
+/*
+ex:
+        3 <--> 5 <--> 3 <--> 8
+index:  0      1      2      3
+
+LinkedList.indexOf(3) => [0, 2]
+*/
+LinkedList.prototype.indexOf = function (value) {
+
+    //think: 須要遍歷整個LinkedList結構
+    var currentNode = this.head;
+    var currentIndex = 0;
+    var indexes = [];
+    while(currentNode){
+        if(currentNode.value === value){
+            indexes.push(currentIndex);
+        }
+        currentIndex++;
+        currentNode = currentNode.next;
+    }
+    
+    return indexes;
+};
+
+
+var l5 = new LinkedList();
+
+l5.addToTail(3);
+l5.addToTail(2);
+l5.addToTail(5);
+l5.addToTail(3);
+l5.addToTail(1);
+l5.addToTail(7);
+// 3 <--> 2 <--> 5 <--> 3 <--> 1 <--> 7
+console.log(l5.indexOf(3));// [0, 3]
+console.log(l5.indexOf(0));// []
+console.log(l5.indexOf(1));// [4]
+//------------------------------------------------------------
+//
+
